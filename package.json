@@ -1,0 +1,11 @@
+{
+  "name": "plantcam",
+  "description": "plants FROM THE FUTURE",
+  "version": "0.0.1",
+  "author": "Drew Harris <drewbharris@gmail.com>",
+  "main": "index.js",
+  "dependencies": {
+    "express": "4.12.3"
+  },
+  "engine": "node >= 0.10"
+}
