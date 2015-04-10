@@ -2,29 +2,57 @@ var express = require('express');
 var app = express();
 var spawn = require('child_process').spawn;
 var fs = require('fs');
-
-app.get('/', function(req, res){
-  res.send('hello world');
-});
-
-app.get('/webcam.jpg', function(req, res){
-  return res.sendFile('/tmp/fswebcam.jpg');
-});
-
-app.get('/webcam_now.jpg', function(req, res){
-  return res.sendFile('/tmp/pony.jpg');
-});
+var when = require('when');
 
 
-function capture(cb) {
-  var child = spawn('fswebcam', ['-r', '640x480', '--jpeg', '100', '-D', '0', '-S', '13', '/tmp/fswebcam.jpg']);
-  child.stdout.on('close', function(code) {
-    cb();
-  });
+var Capture = function(init) {
+    var self = this;
+
+    self.cameraInUse = false;
+
+    self.doCapture = function() {
+        if (self.cameraInUse) {
+            return when.resolve();
+        }
+        var d = when.defer();
+
+        self.cameraInUse = true;
+        var child = spawn('fswebcam', ['-r', '640x480', '--jpeg', '100', '-D', '0', '-S', '13', '/tmp/fswebcam.jpg']);
+        child.stdout.on('close', function(code) {
+            self.cameraInUse = false;
+            console.log("capture completed at " + new Date());
+            return d.resolve();
+        });
+        return d.promise;
+    };
+
+    self.interval = setInterval(function() {
+        self.doCapture().then(function() {
+        });
+    }, init.intervalTime);
 };
 
-capture(function() { console.log('done'); });
-setInterval(function() { capture(function(){ console.log('done');}); }, 30*1000);
+var capture = new Capture({
+    intervalTime: 30*1000
+});
 
+
+app.get('/', function(req, res){
+    res.send('hey');
+});
+
+// serve the latest image
+app.get('/webcam.jpg', function(req, res){
+    return res.sendFile('/tmp/fswebcam.jpg');
+});
+
+
+// an API?
+app.post('/api/v1/update', function(req, res){
+    capture.doCapture.then(function() {
+        return res.send({});
+    });
+});
 
 app.listen(3000);
+console.log('listening on 3000');

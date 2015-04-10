@@ -5,7 +5,8 @@
   "author": "Drew Harris <drewbharris@gmail.com>",
   "main": "index.js",
   "dependencies": {
-    "express": "4.12.3"
+    "express": "4.12.3",
+    "when": "3.7.2"
   },
   "engine": "node >= 0.10"
 }
