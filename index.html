@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <style text="text/css">
+            html, body {
+                height: 100%;
+                margin: 0;
+            }
+            #imagediv {
+                height: 100%;
+    margin: 0 auto;
+    background: url(/webcam.jpg);
+    background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="imagediv">
+        </div>
+        <script type="text/javascript">
+            setTimeout(function () {
+                window.location.reload();
+            }, 3000);
+        </script>
+    </body>
+</html>

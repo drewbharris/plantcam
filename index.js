@@ -17,7 +17,7 @@ var Capture = function(init) {
         var d = when.defer();
 
         self.cameraInUse = true;
-        var child = spawn('fswebcam', ['-r', '640x480', '--jpeg', '100', '-D', '0', '-S', '13', '/tmp/fswebcam.jpg']);
+        var child = spawn('fswebcam', ['-r', '80x60', '--jpeg', '100', '-D', '0', '-S', '13', '--no-banner', '/tmp/fswebcam.jpg']);
         child.stdout.on('close', function(code) {
             self.cameraInUse = false;
             console.log("capture completed at " + new Date());
@@ -33,12 +33,12 @@ var Capture = function(init) {
 };
 
 var capture = new Capture({
-    intervalTime: 30*1000
+    intervalTime: 5*1000
 });
 
 
 app.get('/', function(req, res){
-    res.send('hey');
+    res.sendFile('/home/pi/plantcam/index.html');
 });
 
 // serve the latest image
